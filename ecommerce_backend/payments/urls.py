@@ -1,7 +1,9 @@
 from django.urls import path
-from .views import StripePaymentAPIView, PaystackPaymentAPIView
+from .views import StripePaymentAPIView, PaystackPaymentAPIView, StripeCheckoutSessionAPIView
 
 urlpatterns = [
-    path('stripe/', StripePaymentAPIView.as_view(), name='stripe-payment'),
-    path('paystack/', PaystackPaymentAPIView.as_view(), name='paystack-payment'),
+    path('stripe/', StripePaymentAPIView.as_view(), name='audiophille-stripe-payment'),
+    path('stripe/checkout-session/', StripeCheckoutSessionAPIView.as_view(), name='audiophille-stripe-payment'),
+    path('paystack/', PaystackPaymentAPIView.as_view(), name='audiophille-paystack-payment'),
+    
 ]

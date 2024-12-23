@@ -7,6 +7,7 @@ from django.conf import settings
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
+
 class StripePaymentAPIView(APIView):
     def post(self, request):
         try:
@@ -21,6 +22,33 @@ class StripePaymentAPIView(APIView):
             return Response({'clientSecret': intent['client_secret']})
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class StripeCheckoutSessionAPIView(APIView):
+    def post(self, request):
+        try:
+            data = request.data
+            # Create a Stripe Checkout Session
+            session = stripe.checkout.Session.create(
+                payment_method_types=["card"],
+                line_items=[
+                    {
+                        "price_data": {
+                            "currency": "usd",
+                            "product_data": {"name": data["product_name"]},
+                            "unit_amount": int(data["amount"]) * 100,  # Price in cents
+                        },
+                        "quantity": data["quantity"],
+                    },
+                ],
+                mode="payment",
+                success_url="http://localhost:3000/success",  # Replace with your frontend success page URL
+                cancel_url="http://localhost:3000/cancel",    # Replace with your frontend cancel page URL
+            )
+            return Response({"url": session.url})  # Send the URL for redirection
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
 
 class PaystackPaymentAPIView(APIView):
     def post(self, request):
