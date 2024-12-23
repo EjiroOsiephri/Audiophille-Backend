@@ -4,8 +4,17 @@ from rest_framework.response import Response
 from rest_framework import status
 from paystackapi.transaction import Transaction as PaystackTransaction
 from django.conf import settings
+from django.http import HttpResponse
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
+
+
+
+
+from django.http import HttpRequest
+
+def index(request: HttpRequest):
+    return HttpResponse("Welcome to the Ecommerce Backend!")
 
 
 class StripePaymentAPIView(APIView):
