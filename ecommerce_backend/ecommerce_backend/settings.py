@@ -30,7 +30,8 @@ SECRET_KEY = 'django-insecure-c=c7rju!lh*sn7k$8dll2h=ispa3j5c0*d1riw=nlh6==g^nlz
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['audiophille-backend.onrender.com', 'localhost', '127.0.0.1']
+
 
 
 # Application definition
