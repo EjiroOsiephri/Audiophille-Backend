@@ -6,8 +6,7 @@ from .views import (
     index,
     paystack_webhook,
     PaystackVerifyTransactionAPIView,
-    CryptoPaymentAPIView,
-    crypto_webhook 
+   
 )
 
 urlpatterns = [
