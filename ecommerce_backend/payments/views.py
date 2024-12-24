@@ -20,6 +20,21 @@ def index(request: HttpRequest):
     return HttpResponse("Welcome to the Ecommerce Backend!")
 
 
+class PaystackVerifyTransactionAPIView(APIView):
+    def get(self, request, reference):
+        try:
+            # Verify the transaction using the reference
+            response = PaystackTransaction.verify(reference)
+            if response["data"]["status"] == "success":
+                # Payment was successful
+                return Response({"message": "Payment verified successfully", "data": response["data"]})
+            else:
+                # Payment not successful
+                return Response({"message": "Payment not verified", "data": response["data"]}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 class StripePaymentAPIView(APIView):
     def post(self, request):
         try:
