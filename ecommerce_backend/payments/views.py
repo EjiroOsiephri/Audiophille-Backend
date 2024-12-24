@@ -57,6 +57,40 @@ class StripeCheckoutSessionAPIView(APIView):
     def post(self, request):
         try:
             data = request.data
+            # Ensure `amount` represents the total price
+            total_amount = int(data["amount"])  # Total amount in cents
+            quantity = int(data["quantity"])  # Total quantity
+            
+            if quantity <= 0:
+                return Response({'error': 'Quantity must be greater than 0'}, status=status.HTTP_400_BAD_REQUEST)
+            
+            # Calculate unit price
+            unit_amount = total_amount // quantity  # Divide total amount by quantity
+            
+            # Create a Stripe Checkout Session
+            session = stripe.checkout.Session.create(
+                payment_method_types=["card"],
+                line_items=[
+                    {
+                        "price_data": {
+                            "currency": "usd",
+                            "product_data": {"name": data["product_name"]},
+                            "unit_amount": unit_amount,  # Unit price in cents
+                        },
+                        "quantity": quantity,  # Correctly use quantity here
+                    },
+                ],
+                mode="payment",
+                success_url="https://audiophille-ecommerce.vercel.app/success",  # Replace with your frontend success page URL
+                cancel_url="https://audiophille-ecommerce.vercel.app/checkout",    # Replace with your frontend cancel page URL
+            )
+            return Response({"url": session.url})  # Send the URL for redirection
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    def post(self, request):
+        try:
+            data = request.data
             # Create a Stripe Checkout Session
             session = stripe.checkout.Session.create(
                 payment_method_types=["card"],
