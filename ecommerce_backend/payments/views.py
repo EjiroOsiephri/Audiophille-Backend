@@ -11,9 +11,11 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from paystackapi.transaction import Transaction as PaystackTransaction
 import json
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from django.conf import settings
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
-
 
 
 def index(request: HttpRequest):
@@ -41,7 +43,7 @@ class StripePaymentAPIView(APIView):
             data = request.data
             # Create a Stripe Payment Intent
             intent = stripe.PaymentIntent.create(
-                amount=int(data['amount']) * 100,  # Amount in cents
+                amount=int(data['amount']),  # Amount in cents
                 currency='usd',
                 payment_method_types=['card'],
                 metadata={"email": data['email']}
